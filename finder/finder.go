@@ -1,44 +1,27 @@
 package finder
 
-type Occurence struct {
-	Text    string
-	StartAt uint
-	EndAt   uint
-}
+import (
+	ti "github.com/joaomarcelofa/pokemon_finder/text_iterator"
+)
 
-func FindPokemon(text string) []Occurence {
-	runes := []rune(text)
-	occurences := []Occurence{}
-	word := []rune{}
-	for i, char := range runes {
-		// Search for some special char or white space to indicate the end of the word
-		switch char {
-		case ' ', ',', '.', ';':
-			wordStr := string(word)
-			if isPokemon(wordStr) {
-				wordSize := len([]rune(wordStr))
-				startIndex := i - wordSize
-				oc := getOccurence(wordStr, startIndex)
-				occurences = append(occurences, oc)
-			}
-			word = []rune{}
-		default:
-			word = append(word, char)
+func FindPokemonOccurences(text string) []ti.Word {
+	iterator := ti.NewTextIterator(text)
+
+	pokemons := []ti.Word{}
+	finish := false
+	for !finish {
+		word := iterator.Next()
+		if word == nil {
+			finish = true
+			continue
+		}
+
+		if isPokemon(word.Text) {
+			pokemons = append(pokemons, *word)
 		}
 	}
 
-	if len(word) > 0 {
-		wordStr := string(word)
-		if isPokemon(wordStr) {
-			lastChar := len(runes) - 1
-			wordSize := len([]rune(wordStr))
-			startIndex := lastChar - wordSize + 1
-			oc := getOccurence(wordStr, startIndex)
-			occurences = append(occurences, oc)
-		}
-	}
-
-	return occurences
+	return pokemons
 }
 
 func isPokemon(word string) bool {
@@ -853,14 +836,4 @@ func isPokemon(word string) bool {
 	}
 
 	return pokemonMap[word]
-}
-
-func getOccurence(word string, startIndex int) Occurence {
-	wordSize := len([]rune(word))
-	oc := Occurence{
-		Text:    word,
-		StartAt: uint(startIndex),
-		EndAt:   uint(startIndex + wordSize - 1),
-	}
-	return oc
 }
