@@ -1,11 +1,22 @@
 package finder
 
 import (
+	"log"
 	"reflect"
 	"testing"
 
 	ti "github.com/joaomarcelofa/pokemon_finder/text_iterator"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func newFinder() *finder {
+	finder, err := NewFinder()
+	if err != nil {
+		log.Fatalf("can't create the finder: %s", err)
+	}
+	return finder
+}
 
 func BenchmarkFindPokemonOccurences(b *testing.B) {
 	text := "Eu sou um treinador pokémon e tenho um Pikachu, mas também tenho um Gengar"
@@ -23,9 +34,16 @@ func BenchmarkFindPokemonOccurences(b *testing.B) {
 		},
 	}
 
-	found := FindPokemonOccurences(text)
+	f := newFinder()
+	found := f.FindPokemonOccurences(text)
 
 	if !reflect.DeepEqual(found, want) {
 		b.Errorf("want: %v, received: %v", want, found)
 	}
+}
+
+func TestNewFinder(t *testing.T) {
+	finder, err := NewFinder()
+	require.NoError(t, err)
+	assert.NotNil(t, finder.pokemonMap)
 }
