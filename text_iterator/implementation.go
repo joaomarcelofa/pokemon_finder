@@ -27,11 +27,13 @@ func (cti *concreteTextIterator) Next() *Word {
 		switch {
 		case cti.isABreakingRune(char):
 			wordWasFound = true
-		case cti.isOnLastRune(i):
-			nextWord = append(nextWord, char)
-			wordWasFound = true
+		case cti.skipChar(char):
 		default:
 			nextWord = append(nextWord, char)
+		}
+
+		if cti.isOnLastRune(i) {
+			wordWasFound = true
 		}
 
 		if wordWasFound {
@@ -61,6 +63,15 @@ func (cti *concreteTextIterator) isABreakingRune(r rune) bool {
 		',': true,
 		'.': true,
 		';': true,
+		'?': true,
+		'!': true,
+	}
+	return runeMap[r]
+}
+
+func (cti *concreteTextIterator) skipChar(r rune) bool {
+	runeMap := map[rune]bool{
+		'"': true,
 	}
 	return runeMap[r]
 }

@@ -49,4 +49,23 @@ func TestNext(t *testing.T) {
 		expected := textIterator.Next()
 		require.Nil(t, expected, "expecting a nil word")
 	})
+
+	t.Run("test with a skip char", func(t *testing.T) {
+		textIterator := NewTextIterator("\"palavra\"")
+		word := textIterator.Next() // Return palavra
+		expected := "palavra"
+		require.Equal(t, word.Text, expected)
+	})
+
+	t.Run("test with farfetch'd", func(t *testing.T) {
+		want := &Word{
+			Text:    "farfetch'd",
+			StartAt: 3,
+			EndAt:   12,
+		}
+		textIterator := NewTextIterator("um farfetch'd")
+		textIterator.Next() // Return um
+		expected := textIterator.Next()
+		require.Equal(t, want, expected, "farfetch'd not recognized")
+	})
 }
