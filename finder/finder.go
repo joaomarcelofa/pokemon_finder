@@ -1,6 +1,7 @@
 package finder
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -12,7 +13,12 @@ type finder struct {
 }
 
 func NewFinder() (*finder, error) {
-	listFile := "/home/joao/juit/go/src/github.com/joaomarcelofa/pokemon_finder/pokemon_list.txt"
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	listFile := fmt.Sprintf("%s/pokemon_list.txt", dir)
 
 	fileReader, err := os.Open(listFile)
 	if err != nil {
