@@ -18,6 +18,11 @@ func NewFinder() (*finder, error) {
 		return nil, err
 	}
 
+	paths := strings.SplitAfter(dir, "pokemon_finder")
+	if len(paths) > 1 {
+		dir = paths[0]
+	}
+
 	listFile := fmt.Sprintf("%s/pokemon_list.txt", dir)
 
 	fileReader, err := os.Open(listFile)
@@ -25,7 +30,7 @@ func NewFinder() (*finder, error) {
 		return nil, err
 	}
 
-	pokemonMap := loadList(fileReader)
+	pokemonMap := loadMap(fileReader)
 
 	f := &finder{
 		pokemonMap: pokemonMap,
