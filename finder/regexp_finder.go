@@ -20,31 +20,30 @@ func NewRegexpFinder() (*regexpFinder, error) {
 
 func (rf *regexpFinder) FindOccurences(text string, sentencesToFind []string) []ti.Word {
 	textLowerCased := strings.ToLower(text)
-	// textRunes := []rune(textLowerCased)
 
-	pokemons := []ti.Word{}
+	occurences := []ti.Word{}
 
-	for _, pokemon := range sentencesToFind {
-		pokemonFormatted := strings.ReplaceAll(pokemon, ".", `\.`)
-		pokemonRegex := regexp.MustCompile(fmt.Sprintf(`(?m)%s`, pokemonFormatted))
+	for _, sentence := range sentencesToFind {
+		sentenceFormatted := strings.ReplaceAll(sentence, ".", `\.`)
+		sentenceRegex := regexp.MustCompile(fmt.Sprintf(`(?m)%s`, sentenceFormatted))
 
-		occurences := pokemonRegex.FindAllStringIndex(textLowerCased, -1)
-		if len(occurences) > 0 {
-			for _, occurence := range occurences {
+		occurenceIndexes := sentenceRegex.FindAllStringIndex(textLowerCased, -1)
+		if len(occurenceIndexes) > 0 {
+			for _, occurenceIndex := range occurenceIndexes {
 				// https://stackoverflow.com/questions/41956391/how-found-offset-index-a-string-in-rune-using-go
 				// https://go.dev/blog/strings
-				start := utf8.RuneCountInString(text[:occurence[0]])
-				end := utf8.RuneCountInString(text[:occurence[1]]) - 1
+				start := utf8.RuneCountInString(text[:occurenceIndex[0]])
+				end := utf8.RuneCountInString(text[:occurenceIndex[1]]) - 1
 				w := ti.Word{
-					Text:    text[occurence[0]:occurence[1]],
+					Text:    text[occurenceIndex[0]:occurenceIndex[1]],
 					StartAt: uint(start),
 					EndAt:   uint(end),
 				}
 
-				pokemons = append(pokemons, w)
+				occurences = append(occurences, w)
 			}
 		}
 	}
 
-	return pokemons
+	return occurences
 }
