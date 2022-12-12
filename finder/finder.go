@@ -1,48 +1,25 @@
 package finder
 
 import (
-	"fmt"
-	"os"
 	"strings"
 
 	ti "github.com/joaomarcelofa/pokemon_finder/text_iterator"
 )
 
 type finder struct {
-	pokemonMap map[string]bool
 }
 
 func NewFinder() (*finder, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-
-	paths := strings.SplitAfter(dir, "pokemon_finder")
-	if len(paths) > 1 {
-		dir = paths[0]
-	}
-
-	listFile := fmt.Sprintf("%s/pokemon_list.txt", dir)
-
-	fileReader, err := os.Open(listFile)
-	if err != nil {
-		return nil, err
-	}
-
-	pokemonMap := loadMap(fileReader)
-
-	f := &finder{
-		pokemonMap: pokemonMap,
-	}
+	f := &finder{}
 
 	return f, nil
 }
 
-func (f *finder) FindPokemonOccurences(text string) []ti.Word {
+func (f *finder) FindOccurences(text string, sentencesToFind []string) []ti.Word {
+	sentecesMap := f.createSentencesMap(sentencesToFind)
 	iterator := ti.NewTextIterator(text)
 
-	pokemons := []ti.Word{}
+	occurences := []ti.Word{}
 	finish := false
 	for !finish {
 		word := iterator.Next()
@@ -51,15 +28,24 @@ func (f *finder) FindPokemonOccurences(text string) []ti.Word {
 			continue
 		}
 
-		if f.isPokemon(word.Text) {
-			pokemons = append(pokemons, *word)
+		if f.sentenceHasMatch(word.Text, sentecesMap) {
+			occurences = append(occurences, *word)
 		}
 	}
 
-	return pokemons
+	return occurences
 }
 
-func (f *finder) isPokemon(word string) bool {
-	wordLower := strings.ToLower(word)
-	return f.pokemonMap[wordLower]
+func (f *finder) createSentencesMap(sentencesToFind []string) map[string]bool {
+	sentencesMap := map[string]bool{}
+	for _, sentence := range sentencesToFind {
+		lowerCaseSentence := strings.ToLower(sentence)
+		sentencesMap[lowerCaseSentence] = true
+	}
+	return sentencesMap
+}
+
+func (f *finder) sentenceHasMatch(sentence string, sentencesMap map[string]bool) bool {
+	wordLower := strings.ToLower(sentence)
+	return sentencesMap[wordLower]
 }

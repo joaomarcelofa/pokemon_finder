@@ -9,10 +9,10 @@ import (
 
 func TestLoadList(t *testing.T) {
 	r := strings.NewReader("bulbasaur\nivysaur\n")
-	want := map[string]bool{
-		"bulbasaur": true,
-		"ivysaur":   true,
+	want := []string{
+		"bulbasaur",
+		"ivysaur",
 	}
-	result := loadList(r)
+	result := LoadList(r)
 	require.Equal(t, want, result, "list loaded a different config")
 }

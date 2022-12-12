@@ -18,7 +18,7 @@ func newFinder() *finder {
 	return finder
 }
 
-func BenchmarkFindPokemonOccurences(b *testing.B) {
+func BenchmarkFindOccurences(b *testing.B) {
 	text := "Eu sou um treinador pokémon e tenho um Pikachu, mas também tenho um Gengar"
 
 	want := []ti.Word{
@@ -35,7 +35,7 @@ func BenchmarkFindPokemonOccurences(b *testing.B) {
 	}
 
 	f := newFinder()
-	found := f.FindPokemonOccurences(text)
+	found := f.FindOccurences(text, pokemonList)
 
 	if !reflect.DeepEqual(found, want) {
 		b.Errorf("want: %v, received: %v", want, found)
@@ -45,5 +45,5 @@ func BenchmarkFindPokemonOccurences(b *testing.B) {
 func TestNewFinder(t *testing.T) {
 	finder, err := NewFinder()
 	require.NoError(t, err)
-	assert.NotNil(t, finder.pokemonMap)
+	assert.NotNil(t, finder)
 }

@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-func loadMap(reader io.Reader) map[string]bool {
+func LoadMap(reader io.Reader) map[string]bool {
 	listMap := map[string]bool{}
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
@@ -14,7 +14,7 @@ func loadMap(reader io.Reader) map[string]bool {
 	return listMap
 }
 
-func loadList(reader io.Reader) []string {
+func LoadList(reader io.Reader) []string {
 	list := []string{}
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {

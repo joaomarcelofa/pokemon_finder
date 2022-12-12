@@ -438,6 +438,7 @@ bronzor
 bronzong
 bonsly
 mime jr
+mime jr.
 happiny
 chatot
 spiritomb

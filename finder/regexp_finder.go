@@ -2,7 +2,6 @@ package finder
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -11,43 +10,21 @@ import (
 )
 
 type regexpFinder struct {
-	pokemonList []string
 }
 
 func NewRegexpFinder() (*regexpFinder, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-
-	paths := strings.SplitAfter(dir, "pokemon_finder")
-	if len(paths) > 1 {
-		dir = paths[0]
-	}
-
-	listFile := fmt.Sprintf("%s/pokemon_list.txt", dir)
-
-	fileReader, err := os.Open(listFile)
-	if err != nil {
-		return nil, err
-	}
-
-	pokemonList := loadList(fileReader)
-
-	rf := &regexpFinder{
-		pokemonList: pokemonList,
-	}
+	rf := &regexpFinder{}
 
 	return rf, nil
 }
 
-func (rf *regexpFinder) FindPokemonOccurences(text string) []ti.Word {
+func (rf *regexpFinder) FindOccurences(text string, sentencesToFind []string) []ti.Word {
 	textLowerCased := strings.ToLower(text)
 	// textRunes := []rune(textLowerCased)
 
 	pokemons := []ti.Word{}
 
-	for _, pokemon := range rf.pokemonList {
+	for _, pokemon := range sentencesToFind {
 		pokemonFormatted := strings.ReplaceAll(pokemon, ".", `\.`)
 		pokemonRegex := regexp.MustCompile(fmt.Sprintf(`(?m)%s`, pokemonFormatted))
 

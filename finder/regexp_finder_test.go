@@ -16,7 +16,7 @@ func getRegexpFinder() *regexpFinder {
 	return rf
 }
 
-func BenchmarkFindPokemonOccurencesRegexp(b *testing.B) {
+func BenchmarkFindOccurencesRegexp(b *testing.B) {
 	text := "Eu sou um treinador pokémon e tenho um Pikachu, mas também tenho um Gengar"
 
 	want := []ti.Word{
@@ -33,7 +33,7 @@ func BenchmarkFindPokemonOccurencesRegexp(b *testing.B) {
 	}
 
 	f := getRegexpFinder()
-	found := f.FindPokemonOccurences(text)
+	found := f.FindOccurences(text, pokemonList)
 
 	if !reflect.DeepEqual(found, want) {
 		b.Errorf("want: %v, received: %v", want, found)

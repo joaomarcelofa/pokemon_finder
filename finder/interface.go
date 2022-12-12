@@ -2,6 +2,6 @@ package finder
 
 import ti "github.com/joaomarcelofa/pokemon_finder/text_iterator"
 
-type Finder interface {
-	FindPokemonOccurences(text string) []ti.Word
+type TextFinder interface {
+	FindOccurences(text string, sentencesToFind []string) []ti.Word
 }
